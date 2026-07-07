@@ -48,6 +48,7 @@ describe('CustomerListPage', () => {
     mockUseCustomerApi.mockReturnValue({
       loading: false,
       error: null,
+      totalCount: 100,
       fetchCustomers,
       addCustomer: vi.fn(),
       updateCustomer: vi.fn(),
@@ -77,6 +78,8 @@ describe('CustomerListPage', () => {
           search: 'maria',
           sortBy: undefined,
           sortOrder: undefined,
+          page: 1,
+          perPage: 10,
         },
         false,
       )
@@ -100,6 +103,8 @@ describe('CustomerListPage', () => {
           search: undefined,
           sortBy: undefined,
           sortOrder: undefined,
+          page: 1,
+          perPage: 10,
         },
         false,
       )
@@ -119,6 +124,8 @@ describe('CustomerListPage', () => {
           search: undefined,
           sortBy: 'name',
           sortOrder: 'asc',
+          page: 1,
+          perPage: 10,
         },
         false,
       )
@@ -132,6 +139,84 @@ describe('CustomerListPage', () => {
           search: undefined,
           sortBy: 'name',
           sortOrder: 'desc',
+          page: 1,
+          perPage: 10,
+        },
+        false,
+      )
+    })
+  })
+
+  it('uses default pagination of page 1 with 10 rows', async () => {
+    renderPage()
+
+    await waitFor(() => {
+      expect(fetchCustomers).toHaveBeenCalledWith(
+        {
+          search: undefined,
+          sortBy: undefined,
+          sortOrder: undefined,
+          page: 1,
+          perPage: 10,
+        },
+        false,
+      )
+    })
+
+    expect(screen.getByText('Page 1 of 10 (100 records)')).toBeInTheDocument()
+  })
+
+  it('changes rows per page to 25 and then 50', async () => {
+    const user = userEvent.setup()
+
+    renderPage()
+
+    await user.selectOptions(screen.getByLabelText('Rows per page'), '25')
+
+    await waitFor(() => {
+      expect(fetchCustomers).toHaveBeenLastCalledWith(
+        {
+          search: undefined,
+          sortBy: undefined,
+          sortOrder: undefined,
+          page: 1,
+          perPage: 25,
+        },
+        false,
+      )
+    })
+
+    await user.selectOptions(screen.getByLabelText('Rows per page'), '50')
+
+    await waitFor(() => {
+      expect(fetchCustomers).toHaveBeenLastCalledWith(
+        {
+          search: undefined,
+          sortBy: undefined,
+          sortOrder: undefined,
+          page: 1,
+          perPage: 50,
+        },
+        false,
+      )
+    })
+  })
+
+  it('goes to next page and requests the new page', async () => {
+    const user = userEvent.setup()
+
+    renderPage()
+
+    await user.click(screen.getByRole('button', { name: 'Next' }))
+
+    await waitFor(() => {
+      expect(fetchCustomers).toHaveBeenLastCalledWith(
+        {
+          search: undefined,
+          sortBy: undefined,
+          sortOrder: undefined,
+          page: 2,
+          perPage: 10,
         },
         false,
       )

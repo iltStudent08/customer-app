@@ -19,6 +19,7 @@ type CustomerQueryOptions = {
 type UseCustomerApiResult = {
   loading: boolean
   error: string | null
+  totalCount: number
   fetchCustomers: (
     options?: CustomerQueryOptions,
     showLoading?: boolean,
@@ -40,6 +41,7 @@ export function useCustomerApi(): UseCustomerApiResult {
   const { dispatch } = useCustomerContext()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [totalCount, setTotalCount] = useState(0)
   const [lastQuery, setLastQuery] = useState<CustomerQueryOptions>({})
 
   const buildCustomersUrl = (options: CustomerQueryOptions = {}) => {
@@ -63,7 +65,7 @@ export function useCustomerApi(): UseCustomerApiResult {
     }
 
     if (options.perPage) {
-      searchParams.set('_per_page', String(options.perPage))
+      searchParams.set('_limit', String(options.perPage))
     }
 
     const queryString = searchParams.toString()
@@ -75,9 +77,10 @@ export function useCustomerApi(): UseCustomerApiResult {
     options: CustomerQueryOptions = {},
     showLoading = true,
   ) => {
+    setError(null)
+
     if (showLoading) {
       setLoading(true)
-      setError(null)
     }
 
     setLastQuery(options)
@@ -90,6 +93,9 @@ export function useCustomerApi(): UseCustomerApiResult {
       }
 
       const data: Customer[] = await response.json()
+      const totalHeader = response.headers.get('X-Total-Count')
+      const total = totalHeader ? Number(totalHeader) : data.length
+      setTotalCount(Number.isNaN(total) ? data.length : total)
 
       dispatch({
         type: CUSTOMER_ACTIONS.SET_CUSTOMERS,
@@ -194,6 +200,7 @@ export function useCustomerApi(): UseCustomerApiResult {
   return {
     loading,
     error,
+    totalCount,
     fetchCustomers,
     addCustomer,
     updateCustomer,
