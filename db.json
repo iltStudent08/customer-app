@@ -39,16 +39,6 @@
       "city": "Chicago",
       "state": "IL",
       "zip": "60606"
-    },
-    {
-      "id": 5,
-      "name": "Sarah O'Brien",
-      "email": "sarah.obrien@example.com",
-      "phone": "555-0105",
-      "address": "1 Beacon St",
-      "city": "Boston",
-      "state": "MA",
-      "zip": "02108"
     }
   ]
 }

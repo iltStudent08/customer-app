@@ -87,99 +87,94 @@ function CustomerForm({ initialData, onSubmit, onCancel }: CustomerFormProps) {
     })
   }
 
-  const inputStyle = (field: keyof CustomerFormData) => ({
-    width: '100%',
-    padding: '0.5rem',
-    borderRadius: '6px',
-    border: errors[field] ? '1px solid #d93025' : '1px solid #bfbfbf',
-  })
-
   return (
     <form onSubmit={handleSubmit} noValidate>
-      <div style={{ display: 'grid', gap: '1rem' }}>
-        <label>
+      <div className="form-grid">
+        <label className="form-field">
           Name
           <input
             type="text"
             value={formData.name}
             onChange={handleChange('name')}
-            style={inputStyle('name')}
+            className={errors.name ? 'form-input form-input--error' : 'form-input'}
             aria-invalid={Boolean(errors.name)}
           />
-          {errors.name ? <div style={{ color: '#d93025', marginTop: '0.25rem' }}>{errors.name}</div> : null}
+          {errors.name ? <div className="field-error">{errors.name}</div> : null}
         </label>
 
-        <label>
+        <label className="form-field">
           Email
           <input
             type="email"
             value={formData.email}
             onChange={handleChange('email')}
-            style={inputStyle('email')}
+            className={errors.email ? 'form-input form-input--error' : 'form-input'}
             aria-invalid={Boolean(errors.email)}
           />
-          {errors.email ? <div style={{ color: '#d93025', marginTop: '0.25rem' }}>{errors.email}</div> : null}
+          {errors.email ? <div className="field-error">{errors.email}</div> : null}
         </label>
 
-        <label>
+        <label className="form-field">
           Phone
           <input
             type="tel"
             value={formData.phone}
             onChange={handleChange('phone')}
-            style={inputStyle('phone')}
+            className={errors.phone ? 'form-input form-input--error' : 'form-input'}
             aria-invalid={Boolean(errors.phone)}
           />
-          {errors.phone ? <div style={{ color: '#d93025', marginTop: '0.25rem' }}>{errors.phone}</div> : null}
+          {errors.phone ? <div className="field-error">{errors.phone}</div> : null}
         </label>
 
-        <label>
+        <label className="form-field">
           Address
           <input
             type="text"
             value={formData.address}
             onChange={handleChange('address')}
-            style={inputStyle('address')}
+            className="form-input"
             aria-invalid={Boolean(errors.address)}
           />
         </label>
 
-        <label>
+        <label className="form-field">
           City
           <input
             type="text"
             value={formData.city}
             onChange={handleChange('city')}
-            style={inputStyle('city')}
+            className="form-input"
             aria-invalid={Boolean(errors.city)}
           />
         </label>
 
-        <label>
+        <label className="form-field">
           State
           <input
             type="text"
             value={formData.state}
             onChange={handleChange('state')}
-            style={inputStyle('state')}
+            className="form-input"
             aria-invalid={Boolean(errors.state)}
           />
         </label>
 
-        <label>
+        <label className="form-field">
           ZIP
           <input
             type="text"
             value={formData.zip}
             onChange={handleChange('zip')}
-            style={inputStyle('zip')}
+            className="form-input"
             aria-invalid={Boolean(errors.zip)}
           />
         </label>
 
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <button type="submit">{isEditMode ? 'Update Customer' : 'Add Customer'}</button>
-          <button type="button" onClick={onCancel}>
+        <div className="form-actions">
+          <button type="submit" className="btn btn--primary">
+            {isEditMode ? 'Update Customer' : 'Add Customer'}
+          </button>
+          <button type="button" className="btn" onClick={onCancel}>
             Cancel
           </button>
         </div>

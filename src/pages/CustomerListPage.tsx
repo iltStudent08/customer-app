@@ -11,10 +11,10 @@ function CustomerListPage() {
   }
 
   return (
-    <section>
+    <section className="page-card">
       <h2>Customers</h2>
-      {loading ? <p>Loading customers...</p> : null}
-      {error ? <p role="alert">{error}</p> : null}
+      {loading ? <p className="status">Loading customers...</p> : null}
+      {error ? <p className="status status--error" role="alert">{error}</p> : null}
       <CustomerList
         customers={state.customers}
         onDeleteCustomer={handleDeleteCustomer}
