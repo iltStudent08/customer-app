@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { CustomerFormData } from '../types/customer'
 
 type CustomerFormProps = {
@@ -22,15 +22,10 @@ const EMPTY_FORM: CustomerFormData = {
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 function CustomerForm({ initialData, onSubmit, onCancel }: CustomerFormProps) {
-  const [formData, setFormData] = useState<CustomerFormData>(initialData ?? EMPTY_FORM)
+  const [formData, setFormData] = useState<CustomerFormData>(() => initialData ?? EMPTY_FORM)
   const [errors, setErrors] = useState<FormErrors>({})
 
   const isEditMode = Boolean(initialData)
-
-  useEffect(() => {
-    setFormData(initialData ?? EMPTY_FORM)
-    setErrors({})
-  }, [initialData])
 
   const handleChange =
     (field: keyof CustomerFormData) =>

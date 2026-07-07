@@ -68,6 +68,7 @@ function EditCustomerPage() {
     <section>
       <h2>Edit Customer</h2>
       <CustomerForm
+        key={existingCustomer.id}
         initialData={initialData}
         onSubmit={handleSubmit}
         onCancel={handleCancel}
