@@ -59,20 +59,44 @@ describe('CustomerList', () => {
   it('calls delete handler with the correct customer id', async () => {
     const user = userEvent.setup()
     const onDelete = vi.fn()
+    const confirmSpy = vi
+      .spyOn(window, 'confirm')
+      .mockReturnValue(true)
 
     renderCustomerList(customers, onDelete)
 
-    const deleteButtons = screen.getAllByRole('button', { name: 'Delete' })
-    await user.click(deleteButtons[1])
+    await user.click(
+      screen.getByRole('button', { name: 'Delete James Chen' }),
+    )
 
     expect(onDelete).toHaveBeenCalledTimes(1)
     expect(onDelete).toHaveBeenCalledWith(2)
+
+    confirmSpy.mockRestore()
+  })
+
+  it('does not call delete handler when confirmation is cancelled', async () => {
+    const user = userEvent.setup()
+    const onDelete = vi.fn()
+    const confirmSpy = vi
+      .spyOn(window, 'confirm')
+      .mockReturnValue(false)
+
+    renderCustomerList(customers, onDelete)
+
+    await user.click(
+      screen.getByRole('button', { name: 'Delete James Chen' }),
+    )
+
+    expect(onDelete).not.toHaveBeenCalled()
+
+    confirmSpy.mockRestore()
   })
 
   it('renders edit links with the correct route', () => {
     renderCustomerList(customers)
 
-    const editLinks = screen.getAllByRole('link', { name: 'Edit' })
+    const editLinks = screen.getAllByRole('link', { name: /Edit/ })
 
     expect(editLinks).toHaveLength(2)
     expect(editLinks[0]).toHaveAttribute('href', '/edit/1')

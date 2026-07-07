@@ -90,9 +90,10 @@ function CustomerForm({ initialData, onSubmit, onCancel }: CustomerFormProps) {
   return (
     <form onSubmit={handleSubmit} noValidate>
       <div className="form-grid">
-        <label className="form-field">
+        <label className="form-field" htmlFor="customer-name">
           Name
           <input
+            id="customer-name"
             type="text"
             value={formData.name}
             onChange={handleChange('name')}
@@ -102,9 +103,10 @@ function CustomerForm({ initialData, onSubmit, onCancel }: CustomerFormProps) {
           {errors.name ? <div className="field-error">{errors.name}</div> : null}
         </label>
 
-        <label className="form-field">
+        <label className="form-field" htmlFor="customer-email">
           Email
           <input
+            id="customer-email"
             type="email"
             value={formData.email}
             onChange={handleChange('email')}
@@ -114,9 +116,10 @@ function CustomerForm({ initialData, onSubmit, onCancel }: CustomerFormProps) {
           {errors.email ? <div className="field-error">{errors.email}</div> : null}
         </label>
 
-        <label className="form-field">
+        <label className="form-field" htmlFor="customer-phone">
           Phone
           <input
+            id="customer-phone"
             type="tel"
             value={formData.phone}
             onChange={handleChange('phone')}
@@ -126,9 +129,10 @@ function CustomerForm({ initialData, onSubmit, onCancel }: CustomerFormProps) {
           {errors.phone ? <div className="field-error">{errors.phone}</div> : null}
         </label>
 
-        <label className="form-field">
+        <label className="form-field" htmlFor="customer-address">
           Address
           <input
+            id="customer-address"
             type="text"
             value={formData.address}
             onChange={handleChange('address')}
@@ -137,9 +141,10 @@ function CustomerForm({ initialData, onSubmit, onCancel }: CustomerFormProps) {
           />
         </label>
 
-        <label className="form-field">
+        <label className="form-field" htmlFor="customer-city">
           City
           <input
+            id="customer-city"
             type="text"
             value={formData.city}
             onChange={handleChange('city')}
@@ -148,9 +153,10 @@ function CustomerForm({ initialData, onSubmit, onCancel }: CustomerFormProps) {
           />
         </label>
 
-        <label className="form-field">
+        <label className="form-field" htmlFor="customer-state">
           State
           <input
+            id="customer-state"
             type="text"
             value={formData.state}
             onChange={handleChange('state')}
@@ -159,9 +165,10 @@ function CustomerForm({ initialData, onSubmit, onCancel }: CustomerFormProps) {
           />
         </label>
 
-        <label className="form-field">
+        <label className="form-field" htmlFor="customer-zip">
           ZIP
           <input
+            id="customer-zip"
             type="text"
             value={formData.zip}
             onChange={handleChange('zip')}
