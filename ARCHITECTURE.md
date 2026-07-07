@@ -22,33 +22,33 @@ How will the form handle both add and edit modes? — Same component with differ
 
 ---------------------------------------------------------------------------------
 
-Suggested Component Tree (Based on These Decisions)
+## Suggested Component Tree (Based on These Decisions)
 
+```text
 App
-|- BrowserRouter
-|  |- CustomerProvider (Context)
-|  |  |- Layout
-|  |  |  |- Header
-|  |  |  |  |- NavLink: Customers (/)
-|  |  |  |  |- NavLink: Add Customer (/add)
-|  |  |  |- Main
-|  |  |     |- Routes
-|  |  |        |- / -> CustomerListPage
-|  |  |        |  |- CustomerList
-|  |  |        |     |- CustomerCard (repeated)
-|  |  |        |
-|  |  |        |- /add -> AddCustomerPage
-|  |  |        |  |- CustomerForm (mode="add")
-|  |  |        |
-|  |  |        |- /edit/:id -> EditCustomerPage
-|  |  |           |- CustomerForm (mode="edit", initialValues=customer)
+└─ BrowserRouter
+  └─ CustomerProvider (Context)
+    └─ Layout
+      ├─ Header
+      │  ├─ NavLink: Customers (/)
+      │  └─ NavLink: Add Customer (/add)
+      └─ Main
+        └─ Routes
+          ├─ / -> CustomerListPage
+          │  └─ CustomerList
+          │     └─ CustomerCard (repeated)
+          ├─ /add -> AddCustomerPage
+          │  └─ CustomerForm (mode="add")
+          └─ /edit/:id -> EditCustomerPage
+            └─ CustomerForm (mode="edit", initialValues=customer)
+```
 
-Hook + Service Layer Placement
+## Hook + Service Layer Placement
 
 - useCustomers (domain hook): consumed by CustomerListPage, AddCustomerPage, EditCustomerPage.
 - customerService (network layer): called inside context/provider or hook helpers for API requests.
 
-Data Flow Notes
+## Data Flow Notes
 
 - CustomerProvider owns customer state and CRUD helper functions.
 - useCustomers exposes state + operations to pages without leaking HTTP details.
