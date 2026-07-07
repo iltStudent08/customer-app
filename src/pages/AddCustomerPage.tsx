@@ -1,28 +1,18 @@
 import { useNavigate } from 'react-router-dom'
 import CustomerForm from '../components/CustomerForm'
-import { CUSTOMER_ACTIONS } from '../context/customerReducer'
-import { useCustomerContext } from '../context/useCustomerContext'
+import { useCustomerApi } from '../hooks/useCustomerApi'
 import type { CustomerFormData } from '../types/customer'
 
 function AddCustomerPage() {
   const navigate = useNavigate()
-  const { state, dispatch } = useCustomerContext()
+  const { loading, error, addCustomer } = useCustomerApi()
 
-  const handleSubmit = (formData: CustomerFormData) => {
-    const nextId =
-      state.customers.length > 0
-        ? Math.max(...state.customers.map((customer) => customer.id)) + 1
-        : 1
+  const handleSubmit = async (formData: CustomerFormData) => {
+    const success = await addCustomer(formData)
 
-    dispatch({
-      type: CUSTOMER_ACTIONS.ADD_CUSTOMER,
-      payload: {
-        id: nextId,
-        ...formData,
-      },
-    })
-
-    navigate('/')
+    if (success) {
+      navigate('/')
+    }
   }
 
   const handleCancel = () => {
@@ -32,6 +22,8 @@ function AddCustomerPage() {
   return (
     <section>
       <h2>Add Customer</h2>
+      {loading ? <p>Loading customers...</p> : null}
+      {error ? <p role="alert">{error}</p> : null}
       <CustomerForm onSubmit={handleSubmit} onCancel={handleCancel} />
     </section>
   )
