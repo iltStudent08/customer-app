@@ -53,3 +53,43 @@ App
 - CustomerProvider owns customer state and CRUD helper functions.
 - useCustomers exposes state + operations to pages without leaking HTTP details.
 - AddCustomerPage and EditCustomerPage are wrappers that pass mode/initial values/submit handlers into the shared CustomerForm.
+
+## Git Branching Strategy
+
+- Keep `master` stable and merge only reviewed, working changes.
+- Create short-lived branches from `master` for each feature, fix, or chore.
+- Open small PRs and squash-merge back into `master`.
+- Delete merged branches to keep history and branch list clean.
+
+### Branch Naming
+
+- `feature/<scope>-<name>`
+  Example: `feature/pages-customer-list`
+- `fix/<scope>-<name>`
+  Example: `fix/form-submit-validation`
+- `chore/<scope>-<name>`
+  Example: `chore/eslint-config`
+
+### Commit Style
+
+- Use focused commits by logical unit (types, component, page wiring, tests).
+- Use conventional prefixes:
+  - `feat: add customer list page`
+  - `fix: handle empty customer name`
+  - `chore: clean lint warnings`
+  - `test: add customer form tests`
+
+### PR Workflow
+
+1. Pull latest `master`.
+2. Create branch from `master`.
+3. Commit in small steps.
+4. Push branch and open PR (draft is fine early).
+5. Re-sync with `master` before final review.
+6. Squash-merge to `master`.
+7. Delete branch.
+
+### Practical Rule For This Project
+
+- One branch per feature area (page/component/hook), with multiple focused commits inside that branch.
+- Avoid mixing unrelated work in the same PR.
