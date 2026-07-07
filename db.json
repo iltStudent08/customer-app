@@ -2,7 +2,7 @@
   "customers": [
     {
       "id": 1,
-      "name": "Maria Garcia",
+      "name": "example edit",
       "email": "maria.garcia@example.com",
       "phone": "555-0101",
       "address": "742 Evergreen Terrace",
