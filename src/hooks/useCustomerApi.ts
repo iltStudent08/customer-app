@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { CUSTOMER_ACTIONS } from '../context/customerReducer'
 import { useCustomerContext } from '../context/useCustomerContext'
 import type {
@@ -39,7 +39,7 @@ function getErrorMessage(error: unknown) {
 
 export function useCustomerApi(): UseCustomerApiResult {
   const { dispatch } = useCustomerContext()
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [totalCount, setTotalCount] = useState(0)
   const [lastQuery, setLastQuery] = useState<CustomerQueryOptions>({})
@@ -107,16 +107,6 @@ export function useCustomerApi(): UseCustomerApiResult {
       setLoading(false)
     }
   }, [dispatch])
-
-  useEffect(() => {
-    const timerId = window.setTimeout(() => {
-      void fetchCustomers({}, false)
-    }, 0)
-
-    return () => {
-      window.clearTimeout(timerId)
-    }
-  }, [fetchCustomers])
 
   const addCustomer = useCallback(
     async (formData: CustomerFormData) => {
