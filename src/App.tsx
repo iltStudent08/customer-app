@@ -4,8 +4,9 @@ import {
   Outlet,
   Route,
   Routes,
-  useParams,
 } from 'react-router-dom'
+import AddCustomerPage from './pages/AddCustomerPage'
+import EditCustomerPage from './pages/EditCustomerPage'
 
 function Layout() {
   return (
@@ -46,16 +47,6 @@ function Layout() {
 
 function CustomerListPage() {
   return <h1>Customer list page</h1>
-}
-
-function AddCustomerPage() {
-  return <h1>Add customer page (empty form)</h1>
-}
-
-function EditCustomerPage() {
-  const { id } = useParams()
-
-  return <h1>Edit customer page for customer ID: {id}</h1>
 }
 
 function App() {
