@@ -1,12 +1,21 @@
 import { Link } from 'react-router-dom'
-import type { Customer } from '../types/customer'
+import type { Customer, CustomerSortField } from '../types/customer'
 
 type CustomerListProps = {
   customers: Customer[]
   onDeleteCustomer: (id: number) => void
+  sortField: CustomerSortField | null
+  sortOrder: 'asc' | 'desc'
+  onSort: (field: CustomerSortField) => void
 }
 
-function CustomerList({ customers, onDeleteCustomer }: CustomerListProps) {
+function CustomerList({
+  customers,
+  onDeleteCustomer,
+  sortField,
+  sortOrder,
+  onSort,
+}: CustomerListProps) {
   const handleDeleteClick = (id: number, name: string) => {
     const shouldDelete = window.confirm(
       `Are you sure you want to delete ${name}?`,
@@ -23,14 +32,58 @@ function CustomerList({ customers, onDeleteCustomer }: CustomerListProps) {
     return <p className="status">No customers found.</p>
   }
 
+  const getSortIndicator = (field: CustomerSortField) => {
+    if (sortField !== field) {
+      return '↕'
+    }
+
+    return sortOrder === 'asc' ? '↑' : '↓'
+  }
+
   return (
     <table className="customer-table">
       <thead>
         <tr>
-          <th scope="col">Name</th>
-          <th scope="col">Email</th>
-          <th scope="col">Phone</th>
-          <th scope="col">City</th>
+          <th scope="col">
+            <button
+              type="button"
+              className="table-sort-button"
+              onClick={() => onSort('name')}
+              aria-label={`Sort by name ${sortField === 'name' && sortOrder === 'asc' ? 'descending' : 'ascending'}`}
+            >
+              Name <span aria-hidden="true">{getSortIndicator('name')}</span>
+            </button>
+          </th>
+          <th scope="col">
+            <button
+              type="button"
+              className="table-sort-button"
+              onClick={() => onSort('email')}
+              aria-label={`Sort by email ${sortField === 'email' && sortOrder === 'asc' ? 'descending' : 'ascending'}`}
+            >
+              Email <span aria-hidden="true">{getSortIndicator('email')}</span>
+            </button>
+          </th>
+          <th scope="col">
+            <button
+              type="button"
+              className="table-sort-button"
+              onClick={() => onSort('phone')}
+              aria-label={`Sort by phone ${sortField === 'phone' && sortOrder === 'asc' ? 'descending' : 'ascending'}`}
+            >
+              Phone <span aria-hidden="true">{getSortIndicator('phone')}</span>
+            </button>
+          </th>
+          <th scope="col">
+            <button
+              type="button"
+              className="table-sort-button"
+              onClick={() => onSort('city')}
+              aria-label={`Sort by city ${sortField === 'city' && sortOrder === 'asc' ? 'descending' : 'ascending'}`}
+            >
+              City <span aria-hidden="true">{getSortIndicator('city')}</span>
+            </button>
+          </th>
           <th scope="col">Actions</th>
         </tr>
       </thead>

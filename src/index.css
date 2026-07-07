@@ -271,6 +271,28 @@ p {
   background: var(--table-head);
 }
 
+.table-sort-button {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  padding: 0;
+}
+
+.table-sort-button:hover {
+  color: var(--text);
+}
+
+.table-sort-button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 .table-actions {
   display: flex;
   gap: 0.45rem;
@@ -321,6 +343,19 @@ p {
   flex-wrap: wrap;
 }
 
+.search-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: end;
+  gap: 0.55rem;
+}
+
+.search-label {
+  grid-column: 1 / -1;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
 @media (max-width: 740px) {
   .app-header {
     flex-direction: column;
@@ -339,5 +374,9 @@ p {
   .customer-table {
     display: block;
     overflow-x: auto;
+  }
+
+  .search-bar {
+    grid-template-columns: 1fr;
   }
 }

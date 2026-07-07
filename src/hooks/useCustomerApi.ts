@@ -1,12 +1,28 @@
 import { useCallback, useEffect, useState } from 'react'
 import { CUSTOMER_ACTIONS } from '../context/customerReducer'
 import { useCustomerContext } from '../context/useCustomerContext'
-import type { Customer, CustomerFormData } from '../types/customer'
+import type {
+  Customer,
+  CustomerFormData,
+  CustomerSortField,
+} from '../types/customer'
+
+type CustomerQueryOptions = {
+  search?: string
+  city?: string
+  sortBy?: CustomerSortField
+  sortOrder?: 'asc' | 'desc'
+  page?: number
+  perPage?: number
+}
 
 type UseCustomerApiResult = {
   loading: boolean
   error: string | null
-  fetchCustomers: () => Promise<void>
+  fetchCustomers: (
+    options?: CustomerQueryOptions,
+    showLoading?: boolean,
+  ) => Promise<void>
   addCustomer: (formData: CustomerFormData) => Promise<boolean>
   updateCustomer: (customer: Customer) => Promise<boolean>
   deleteCustomer: (id: number) => Promise<boolean>
@@ -24,15 +40,50 @@ export function useCustomerApi(): UseCustomerApiResult {
   const { dispatch } = useCustomerContext()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [lastQuery, setLastQuery] = useState<CustomerQueryOptions>({})
 
-  const fetchCustomers = useCallback(async (showLoading = true) => {
+  const buildCustomersUrl = (options: CustomerQueryOptions = {}) => {
+    const searchParams = new URLSearchParams()
+
+    if (options.search) {
+      searchParams.set('q', options.search)
+    }
+
+    if (options.city) {
+      searchParams.set('city', options.city)
+    }
+
+    if (options.sortBy) {
+      searchParams.set('_sort', options.sortBy)
+      searchParams.set('_order', options.sortOrder ?? 'asc')
+    }
+
+    if (options.page) {
+      searchParams.set('_page', String(options.page))
+    }
+
+    if (options.perPage) {
+      searchParams.set('_per_page', String(options.perPage))
+    }
+
+    const queryString = searchParams.toString()
+
+    return queryString ? `/api/customers?${queryString}` : '/api/customers'
+  }
+
+  const fetchCustomers = useCallback(async (
+    options: CustomerQueryOptions = {},
+    showLoading = true,
+  ) => {
     if (showLoading) {
       setLoading(true)
       setError(null)
     }
 
+    setLastQuery(options)
+
     try {
-      const response = await fetch('/api/customers')
+      const response = await fetch(buildCustomersUrl(options))
 
       if (!response.ok) {
         throw new Error('Failed to fetch customers.')
@@ -53,7 +104,7 @@ export function useCustomerApi(): UseCustomerApiResult {
 
   useEffect(() => {
     const timerId = window.setTimeout(() => {
-      void fetchCustomers(false)
+      void fetchCustomers({}, false)
     }, 0)
 
     return () => {
@@ -77,7 +128,7 @@ export function useCustomerApi(): UseCustomerApiResult {
           throw new Error('Failed to add customer.')
         }
 
-        await fetchCustomers(false)
+        await fetchCustomers(lastQuery, false)
         return true
       } catch (err) {
         setError(getErrorMessage(err))
@@ -85,7 +136,7 @@ export function useCustomerApi(): UseCustomerApiResult {
         return false
       }
     },
-    [fetchCustomers],
+    [fetchCustomers, lastQuery],
   )
 
   const updateCustomer = useCallback(
@@ -104,7 +155,7 @@ export function useCustomerApi(): UseCustomerApiResult {
           throw new Error('Failed to update customer.')
         }
 
-        await fetchCustomers(false)
+        await fetchCustomers(lastQuery, false)
         return true
       } catch (err) {
         setError(getErrorMessage(err))
@@ -112,7 +163,7 @@ export function useCustomerApi(): UseCustomerApiResult {
         return false
       }
     },
-    [fetchCustomers],
+    [fetchCustomers, lastQuery],
   )
 
   const deleteCustomer = useCallback(
@@ -129,7 +180,7 @@ export function useCustomerApi(): UseCustomerApiResult {
           throw new Error('Failed to delete customer.')
         }
 
-        await fetchCustomers(false)
+        await fetchCustomers(lastQuery, false)
         return true
       } catch (err) {
         setError(getErrorMessage(err))
@@ -137,7 +188,7 @@ export function useCustomerApi(): UseCustomerApiResult {
         return false
       }
     },
-    [fetchCustomers],
+    [fetchCustomers, lastQuery],
   )
 
   return {

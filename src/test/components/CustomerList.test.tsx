@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 import CustomerList from '../../components/CustomerList'
-import type { Customer } from '../../types/customer'
+import type { Customer, CustomerSortField } from '../../types/customer'
 
 const customers: Customer[] = [
   {
@@ -31,12 +31,20 @@ const customers: Customer[] = [
 function renderCustomerList(
   customerData: Customer[],
   onDeleteCustomer: (id: number) => void = vi.fn(),
+  options?: {
+    onSort?: (field: CustomerSortField) => void
+    sortField?: CustomerSortField | null
+    sortOrder?: 'asc' | 'desc'
+  },
 ) {
   return render(
     <MemoryRouter>
       <CustomerList
         customers={customerData}
         onDeleteCustomer={onDeleteCustomer}
+        onSort={options?.onSort ?? vi.fn()}
+        sortField={options?.sortField ?? null}
+        sortOrder={options?.sortOrder ?? 'asc'}
       />
     </MemoryRouter>,
   )
@@ -101,5 +109,17 @@ describe('CustomerList', () => {
     expect(editLinks).toHaveLength(2)
     expect(editLinks[0]).toHaveAttribute('href', '/edit/1')
     expect(editLinks[1]).toHaveAttribute('href', '/edit/2')
+  })
+
+  it('calls sort handler when a column header is clicked', async () => {
+    const user = userEvent.setup()
+    const onSort = vi.fn()
+
+    renderCustomerList(customers, vi.fn(), { onSort })
+
+    await user.click(screen.getByRole('button', { name: /Sort by name/i }))
+
+    expect(onSort).toHaveBeenCalledTimes(1)
+    expect(onSort).toHaveBeenCalledWith('name')
   })
 })

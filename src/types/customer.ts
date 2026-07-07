@@ -10,3 +10,5 @@ export interface Customer {
 }
 
 export type CustomerFormData = Omit<Customer, "id">;
+
+export type CustomerSortField = 'name' | 'email' | 'phone' | 'city';
