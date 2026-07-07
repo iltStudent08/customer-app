@@ -222,4 +222,41 @@ describe('CustomerListPage', () => {
       )
     })
   })
+
+  it('goes back to previous page after navigating forward', async () => {
+    const user = userEvent.setup()
+
+    renderPage()
+
+    await user.click(screen.getByRole('button', { name: 'Next' }))
+    await user.click(screen.getByRole('button', { name: 'Previous' }))
+
+    await waitFor(() => {
+      expect(fetchCustomers).toHaveBeenLastCalledWith(
+        {
+          search: undefined,
+          sortBy: undefined,
+          sortOrder: undefined,
+          page: 1,
+          perPage: 10,
+        },
+        false,
+      )
+    })
+  })
+
+  it('deletes customer from page list through list action', async () => {
+    const user = userEvent.setup()
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true)
+
+    renderPage()
+
+    await user.click(screen.getByRole('button', { name: 'Delete Maria Garcia' }))
+
+    await waitFor(() => {
+      expect(deleteCustomer).toHaveBeenCalledWith(1)
+    })
+
+    confirmSpy.mockRestore()
+  })
 })

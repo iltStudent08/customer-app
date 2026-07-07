@@ -95,4 +95,28 @@ describe('CustomerForm', () => {
       screen.getByRole('button', { name: 'Update Customer' }),
     ).toBeInTheDocument()
   })
+
+  it('shows invalid email error and clears it after typing a valid email', async () => {
+    const user = userEvent.setup()
+
+    renderCustomerForm()
+
+    await user.type(screen.getByLabelText('Name'), 'Taylor Jenkins')
+    await user.type(screen.getByLabelText('Email'), 'not-an-email')
+    await user.type(screen.getByLabelText('Phone'), '555-2199')
+    await user.click(screen.getByRole('button', { name: 'Add Customer' }))
+
+    expect(
+      screen.getByText('Please enter a valid email address.'),
+    ).toBeInTheDocument()
+
+    const emailInput = screen.getByRole('textbox', { name: /email/i })
+
+    await user.clear(emailInput)
+    await user.type(emailInput, 'taylor.jenkins@example.com')
+
+    expect(
+      screen.queryByText('Please enter a valid email address.'),
+    ).not.toBeInTheDocument()
+  })
 })
