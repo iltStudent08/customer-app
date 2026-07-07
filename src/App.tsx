@@ -9,6 +9,7 @@ import {
   Route,
   Routes,
 } from 'react-router-dom'
+import ErrorBoundary from './components/ErrorBoundary'
 import { CustomerProvider } from './context/CustomerContext'
 import AddCustomerPage from './pages/AddCustomerPage'
 import CustomerListPage from './pages/CustomerListPage'
@@ -111,7 +112,9 @@ function Layout() {
       </header>
 
       <main className="app-main">
-        <Outlet />
+        <ErrorBoundary>
+          <Outlet />
+        </ErrorBoundary>
       </main>
     </div>
   )
