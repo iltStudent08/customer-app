@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 import { CUSTOMER_ACTIONS } from '../context/customerReducer'
 import { useCustomerContext } from '../context/useCustomerContext'
+import { SAMPLE_CUSTOMERS } from '../data/sampleCustomers'
 import type {
   Customer,
   CustomerFormData,
@@ -37,12 +38,81 @@ function getErrorMessage(error: unknown) {
   return 'Something went wrong while talking to the server.'
 }
 
+function applyQueryOptions(
+  customers: Customer[],
+  options: CustomerQueryOptions,
+): { rows: Customer[]; totalCount: number } {
+  let rows = [...customers]
+
+  if (options.search) {
+    const searchTerm = options.search.toLowerCase()
+    rows = rows.filter((customer) => {
+      const haystack = [
+        customer.name,
+        customer.email,
+        customer.phone,
+        customer.address,
+        customer.city,
+        customer.state,
+        customer.zip,
+      ]
+        .join(' ')
+        .toLowerCase()
+
+      return haystack.includes(searchTerm)
+    })
+  }
+
+  if (options.city) {
+    const cityTerm = options.city.toLowerCase()
+    rows = rows.filter((customer) => customer.city.toLowerCase() === cityTerm)
+  }
+
+  if (options.sortBy) {
+    const sortField = options.sortBy
+
+    rows.sort((a, b) => {
+      const left = a[sortField].toLowerCase()
+      const right = b[sortField].toLowerCase()
+      const comparison = left.localeCompare(right)
+
+      return options.sortOrder === 'desc' ? -comparison : comparison
+    })
+  }
+
+  const totalCount = rows.length
+
+  if (options.page && options.perPage) {
+    const start = (options.page - 1) * options.perPage
+    const end = start + options.perPage
+    rows = rows.slice(start, end)
+  }
+
+  return { rows, totalCount }
+}
+
 export function useCustomerApi(): UseCustomerApiResult {
   const { dispatch } = useCustomerContext()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [totalCount, setTotalCount] = useState(0)
+  const [isDemoMode, setIsDemoMode] = useState(false)
+  const [demoCustomers, setDemoCustomers] = useState<Customer[]>(SAMPLE_CUSTOMERS)
   const [lastQuery, setLastQuery] = useState<CustomerQueryOptions>({})
+
+  const applyDemoData = useCallback(
+    (customers: Customer[], options: CustomerQueryOptions) => {
+      const { rows, totalCount: nextTotal } = applyQueryOptions(customers, options)
+
+      dispatch({
+        type: CUSTOMER_ACTIONS.SET_CUSTOMERS,
+        payload: rows,
+      })
+
+      setTotalCount(nextTotal)
+    },
+    [dispatch],
+  )
 
   const buildCustomersUrl = (options: CustomerQueryOptions = {}) => {
     const searchParams = new URLSearchParams()
@@ -96,20 +166,44 @@ export function useCustomerApi(): UseCustomerApiResult {
       const totalHeader = response.headers.get('X-Total-Count')
       const total = totalHeader ? Number(totalHeader) : data.length
       setTotalCount(Number.isNaN(total) ? data.length : total)
+      setIsDemoMode(false)
 
       dispatch({
         type: CUSTOMER_ACTIONS.SET_CUSTOMERS,
         payload: data,
       })
     } catch (err) {
-      setError(getErrorMessage(err))
+      const isLikelyApiUnavailable = typeof window !== 'undefined'
+
+      if (isLikelyApiUnavailable) {
+        setIsDemoMode(true)
+        setError(null)
+        applyDemoData(demoCustomers, options)
+      } else {
+        setError(getErrorMessage(err))
+      }
     } finally {
       setLoading(false)
     }
-  }, [dispatch])
+  }, [applyDemoData, demoCustomers, dispatch])
 
   const addCustomer = useCallback(
     async (formData: CustomerFormData) => {
+      if (isDemoMode) {
+        const maxId = Math.max(0, ...demoCustomers.map((customer) => customer.id))
+        const nextCustomers = [
+          ...demoCustomers,
+          {
+            id: maxId + 1,
+            ...formData,
+          },
+        ]
+
+        setDemoCustomers(nextCustomers)
+        applyDemoData(nextCustomers, lastQuery)
+        return true
+      }
+
       setLoading(true)
       setError(null)
 
@@ -127,16 +221,39 @@ export function useCustomerApi(): UseCustomerApiResult {
         await fetchCustomers(lastQuery, false)
         return true
       } catch (err) {
-        setError(getErrorMessage(err))
+        const maxId = Math.max(0, ...demoCustomers.map((customer) => customer.id))
+        const nextCustomers = [
+          ...demoCustomers,
+          {
+            id: maxId + 1,
+            ...formData,
+          },
+        ]
+
+        setIsDemoMode(true)
+        setDemoCustomers(nextCustomers)
+        setError(null)
+        applyDemoData(nextCustomers, lastQuery)
+        return true
+      } finally {
         setLoading(false)
-        return false
       }
     },
-    [fetchCustomers, lastQuery],
+    [applyDemoData, demoCustomers, fetchCustomers, isDemoMode, lastQuery],
   )
 
   const updateCustomer = useCallback(
     async (customer: Customer) => {
+      if (isDemoMode) {
+        const nextCustomers = demoCustomers.map((currentCustomer) =>
+          currentCustomer.id === customer.id ? customer : currentCustomer,
+        )
+
+        setDemoCustomers(nextCustomers)
+        applyDemoData(nextCustomers, lastQuery)
+        return true
+      }
+
       setLoading(true)
       setError(null)
 
@@ -154,16 +271,31 @@ export function useCustomerApi(): UseCustomerApiResult {
         await fetchCustomers(lastQuery, false)
         return true
       } catch (err) {
-        setError(getErrorMessage(err))
+        const nextCustomers = demoCustomers.map((currentCustomer) =>
+          currentCustomer.id === customer.id ? customer : currentCustomer,
+        )
+
+        setIsDemoMode(true)
+        setDemoCustomers(nextCustomers)
+        setError(null)
+        applyDemoData(nextCustomers, lastQuery)
+        return true
+      } finally {
         setLoading(false)
-        return false
       }
     },
-    [fetchCustomers, lastQuery],
+    [applyDemoData, demoCustomers, fetchCustomers, isDemoMode, lastQuery],
   )
 
   const deleteCustomer = useCallback(
     async (id: number) => {
+      if (isDemoMode) {
+        const nextCustomers = demoCustomers.filter((customer) => customer.id !== id)
+        setDemoCustomers(nextCustomers)
+        applyDemoData(nextCustomers, lastQuery)
+        return true
+      }
+
       setLoading(true)
       setError(null)
 
@@ -179,12 +311,18 @@ export function useCustomerApi(): UseCustomerApiResult {
         await fetchCustomers(lastQuery, false)
         return true
       } catch (err) {
-        setError(getErrorMessage(err))
+        const nextCustomers = demoCustomers.filter((customer) => customer.id !== id)
+
+        setIsDemoMode(true)
+        setDemoCustomers(nextCustomers)
+        setError(null)
+        applyDemoData(nextCustomers, lastQuery)
+        return true
+      } finally {
         setLoading(false)
-        return false
       }
     },
-    [fetchCustomers, lastQuery],
+    [applyDemoData, demoCustomers, fetchCustomers, isDemoMode, lastQuery],
   )
 
   return {
