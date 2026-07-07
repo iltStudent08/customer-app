@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom'
 import { CustomerProvider } from './context/CustomerContext'
 import AddCustomerPage from './pages/AddCustomerPage'
+import CustomerListPage from './pages/CustomerListPage'
 import EditCustomerPage from './pages/EditCustomerPage'
 
 function Layout() {
@@ -44,10 +45,6 @@ function Layout() {
       </main>
     </div>
   )
-}
-
-function CustomerListPage() {
-  return <h1>Customer list page</h1>
 }
 
 function App() {
