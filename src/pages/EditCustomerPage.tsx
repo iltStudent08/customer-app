@@ -18,19 +18,19 @@ function EditCustomerPage() {
 
   if (loading) {
     return (
-      <section>
+      <section className="page-card">
         <h2>Edit Customer</h2>
-        <p>Loading customers...</p>
+        <p className="status">Loading customers...</p>
       </section>
     )
   }
 
   if (error) {
     return (
-      <section>
+      <section className="page-card">
         <h2>Edit Customer</h2>
-        <p role="alert">{error}</p>
-        <button type="button" onClick={() => navigate('/')}>
+        <p className="status status--error" role="alert">{error}</p>
+        <button type="button" className="btn" onClick={() => navigate('/')}>
           Back to Customers
         </button>
       </section>
@@ -39,10 +39,10 @@ function EditCustomerPage() {
 
   if (isInvalidId || !existingCustomer) {
     return (
-      <section>
+      <section className="page-card">
         <h2>Edit Customer</h2>
-        <p>Customer not found.</p>
-        <button type="button" onClick={() => navigate('/')}>
+        <p className="status">Customer not found.</p>
+        <button type="button" className="btn" onClick={() => navigate('/')}>
           Back to Customers
         </button>
       </section>
@@ -75,10 +75,10 @@ function EditCustomerPage() {
   }
 
   return (
-    <section>
+    <section className="page-card">
       <h2>Edit Customer</h2>
-      {loading ? <p>Loading customers...</p> : null}
-      {error ? <p role="alert">{error}</p> : null}
+      {loading ? <p className="status">Loading customers...</p> : null}
+      {error ? <p className="status status--error" role="alert">{error}</p> : null}
       <CustomerForm
         key={existingCustomer.id}
         initialData={initialData}

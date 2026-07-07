@@ -1,4 +1,8 @@
 import {
+  useEffect,
+  useState,
+} from 'react'
+import {
   BrowserRouter,
   NavLink,
   Outlet,
@@ -10,37 +14,64 @@ import AddCustomerPage from './pages/AddCustomerPage'
 import CustomerListPage from './pages/CustomerListPage'
 import EditCustomerPage from './pages/EditCustomerPage'
 
+type ThemeMode = 'light' | 'dark'
+
 function Layout() {
+  const [theme, setTheme] = useState<ThemeMode>(() => {
+    const savedTheme = localStorage.getItem('theme')
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      return savedTheme
+    }
+
+    return 'light'
+  })
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('theme', theme)
+  }, [theme])
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'))
+  }
+
   return (
-    <div
-      style={{
-        maxWidth: '960px',
-        margin: '0 auto',
-        padding: '1rem',
-        fontFamily: 'system-ui, -apple-system, Segoe UI, Roboto, sans-serif',
-      }}
-    >
-      <header
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '1rem',
-          marginBottom: '1.25rem',
-          padding: '0.75rem 1rem',
-          border: '1px solid #cfcfcf',
-          borderRadius: '8px',
-          backgroundColor: '#f8f8f8',
-        }}
-      >
-        <h1 style={{ margin: 0, fontSize: '1.25rem' }}>Customer Manager</h1>
-        <nav style={{ display: 'flex', gap: '0.75rem' }}>
-          <NavLink to="/">Customers</NavLink>
-          <NavLink to="/add">Add Customer</NavLink>
-        </nav>
+    <div className="app-shell">
+      <header className="app-header">
+        <div>
+          <p className="eyebrow">CRM Workspace</p>
+          <h1>Customer Manager</h1>
+        </div>
+        <div className="header-actions">
+          <nav className="app-nav" aria-label="Primary">
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                isActive ? 'nav-link nav-link--active' : 'nav-link'
+              }
+            >
+              Customers
+            </NavLink>
+            <NavLink
+              to="/add"
+              className={({ isActive }) =>
+                isActive ? 'nav-link nav-link--active' : 'nav-link'
+              }
+            >
+              Add Customer
+            </NavLink>
+          </nav>
+          <button
+            type="button"
+            className="btn btn--secondary"
+            onClick={toggleTheme}
+          >
+            {theme === 'light' ? 'Dark mode' : 'Light mode'}
+          </button>
+        </div>
       </header>
 
-      <main>
+      <main className="app-main">
         <Outlet />
       </main>
     </div>

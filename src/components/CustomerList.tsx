@@ -8,11 +8,11 @@ type CustomerListProps = {
 
 function CustomerList({ customers, onDeleteCustomer }: CustomerListProps) {
   if (customers.length === 0) {
-    return <p>No customers found.</p>
+    return <p className="status">No customers found.</p>
   }
 
   return (
-    <table>
+    <table className="customer-table">
       <thead>
         <tr>
           <th scope="col">Name</th>
@@ -29,13 +29,18 @@ function CustomerList({ customers, onDeleteCustomer }: CustomerListProps) {
             <td>{customer.email}</td>
             <td>{customer.phone}</td>
             <td>{customer.city}</td>
-            <td>
-              <Link to={`/edit/${customer.id}`}>Edit</Link>{' '}
+            <td className="table-actions">
+              <Link className="btn btn--success" to={`/edit/${customer.id}`}>
+                Edit
+              </Link>
               <button
                 type="button"
+                className="btn btn--danger"
                 onClick={() => onDeleteCustomer(customer.id)}
+                aria-label="Delete"
+                title="Delete"
               >
-                Delete
+                <span aria-hidden="true">🗑</span>
               </button>
             </td>
           </tr>
