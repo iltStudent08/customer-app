@@ -7,6 +7,18 @@ type CustomerListProps = {
 }
 
 function CustomerList({ customers, onDeleteCustomer }: CustomerListProps) {
+  const handleDeleteClick = (id: number, name: string) => {
+    const shouldDelete = window.confirm(
+      `Are you sure you want to delete ${name}?`,
+    )
+
+    if (!shouldDelete) {
+      return
+    }
+
+    onDeleteCustomer(id)
+  }
+
   if (customers.length === 0) {
     return <p className="status">No customers found.</p>
   }
@@ -33,8 +45,8 @@ function CustomerList({ customers, onDeleteCustomer }: CustomerListProps) {
               <Link
                 className="btn btn--success"
                 to={`/edit/${customer.id}`}
-                aria-label="Edit"
-                title="Edit"
+                aria-label={`Edit ${customer.name}`}
+                title={`Edit ${customer.name}`}
               >
                 <svg
                   className="icon-svg"
@@ -61,9 +73,9 @@ function CustomerList({ customers, onDeleteCustomer }: CustomerListProps) {
               <button
                 type="button"
                 className="btn btn--danger"
-                onClick={() => onDeleteCustomer(customer.id)}
-                aria-label="Delete"
-                title="Delete"
+                onClick={() => handleDeleteClick(customer.id, customer.name)}
+                aria-label={`Delete ${customer.name}`}
+                title={`Delete ${customer.name}`}
               >
                 <svg
                   className="icon-svg"
