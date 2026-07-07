@@ -1,38 +1,21 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import CustomerForm from '../components/CustomerForm'
-import type { Customer, CustomerFormData } from '../types/customer'
-
-const MOCK_CUSTOMERS: Customer[] = [
-  {
-    id: 1,
-    name: 'Maria Garcia',
-    email: 'maria.garcia@example.com',
-    phone: '555-0101',
-    address: '742 Evergreen Terrace',
-    city: 'Springfield',
-    state: 'IL',
-    zip: '62704',
-  },
-  {
-    id: 2,
-    name: 'James Chen',
-    email: 'james.chen@example.com',
-    phone: '555-0102',
-    address: '1600 Pennsylvania Ave',
-    city: 'Washington',
-    state: 'DC',
-    zip: '20500',
-  },
-]
+import { CUSTOMER_ACTIONS } from '../context/customerReducer'
+import { useCustomerContext } from '../context/useCustomerContext'
+import type { CustomerFormData } from '../types/customer'
 
 function EditCustomerPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { state, dispatch } = useCustomerContext()
 
   const customerId = Number(id)
-  const existingCustomer = MOCK_CUSTOMERS.find((customer) => customer.id === customerId)
+  const isInvalidId = Number.isNaN(customerId)
+  const existingCustomer = state.customers.find(
+    (customer) => customer.id === customerId,
+  )
 
-  if (!existingCustomer) {
+  if (isInvalidId || !existingCustomer) {
     return (
       <section>
         <h2>Edit Customer</h2>
@@ -55,8 +38,14 @@ function EditCustomerPage() {
   }
 
   const handleSubmit = (formData: CustomerFormData) => {
-    // Placeholder for provider/hook update handler.
-    void formData
+    dispatch({
+      type: CUSTOMER_ACTIONS.UPDATE_CUSTOMER,
+      payload: {
+        id: existingCustomer.id,
+        ...formData,
+      },
+    })
+
     navigate('/')
   }
 

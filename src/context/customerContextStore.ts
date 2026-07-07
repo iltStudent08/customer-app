@@ -1,8 +1,9 @@
 import { createContext, type Dispatch } from 'react'
+import { SAMPLE_CUSTOMERS } from '../data/sampleCustomers'
 import type { CustomerAction, CustomerState } from './customerReducer'
 
 export const initialCustomerState: CustomerState = {
-  customers: [],
+  customers: SAMPLE_CUSTOMERS,
 }
 
 type CustomerContextValue = {
