@@ -122,4 +122,28 @@ describe('CustomerList', () => {
     expect(onSort).toHaveBeenCalledTimes(1)
     expect(onSort).toHaveBeenCalledWith('name')
   })
+
+  it('renders descending aria-label for active ascending column', () => {
+    renderCustomerList(customers, vi.fn(), {
+      sortField: 'email',
+      sortOrder: 'asc',
+    })
+
+    expect(
+      screen.getByRole('button', { name: 'Sort by email descending' }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('↑')).toBeInTheDocument()
+  })
+
+  it('renders ascending aria-label for active descending column', () => {
+    renderCustomerList(customers, vi.fn(), {
+      sortField: 'city',
+      sortOrder: 'desc',
+    })
+
+    expect(
+      screen.getByRole('button', { name: 'Sort by city ascending' }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('↓')).toBeInTheDocument()
+  })
 })
