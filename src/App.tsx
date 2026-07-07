@@ -5,6 +5,7 @@ import {
   Route,
   Routes,
 } from 'react-router-dom'
+import { CustomerProvider } from './context/CustomerContext'
 import AddCustomerPage from './pages/AddCustomerPage'
 import EditCustomerPage from './pages/EditCustomerPage'
 
@@ -52,13 +53,15 @@ function CustomerListPage() {
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<CustomerListPage />} />
-          <Route path="/add" element={<AddCustomerPage />} />
-          <Route path="/edit/:id" element={<EditCustomerPage />} />
-        </Route>
-      </Routes>
+      <CustomerProvider>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<CustomerListPage />} />
+            <Route path="/add" element={<AddCustomerPage />} />
+            <Route path="/edit/:id" element={<EditCustomerPage />} />
+          </Route>
+        </Routes>
+      </CustomerProvider>
     </BrowserRouter>
   )
 }
