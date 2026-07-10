@@ -2,6 +2,11 @@
 
 Live App: https://iltStudent08.github.io/customer-app/
 
+Live Docs:
+
+- README page: https://iltStudent08.github.io/customer-app/readme/
+- Architecture page: https://iltStudent08.github.io/customer-app/architecture/
+
 Customer Manager is a React + TypeScript single-page app for managing customer records with search, sorting, pagination, and CRUD flows.
 
 ## Features
