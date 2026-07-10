@@ -1,75 +1,95 @@
-# React + TypeScript + Vite
+# Customer Manager App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Customer Manager is a React + TypeScript single-page app for managing customer records with search, sorting, pagination, and CRUD flows.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Customer list view with searchable, sortable columns.
+- Pagination controls with page-size options.
+- Add, edit, and delete customer flows.
+- Form validation and accessibility-focused labels/actions.
+- Error boundary for resilient UI fallback.
+- Demo fallback data mode when API is unavailable (useful for GitHub Pages demo).
+- Test suite with coverage thresholds.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19
+- TypeScript
+- Vite
+- React Router
+- Context + useReducer state management
+- JSON Server (local API)
+- Vitest + Testing Library
 
-## Expanding the ESLint configuration
+## Project Structure
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- [src/components](src/components): Reusable UI components.
+- [src/pages](src/pages): Route-level page components.
+- [src/context](src/context): App state context and reducer.
+- [src/hooks](src/hooks): Data-fetching and API integration hooks.
+- [src/test](src/test): Test setup and component/page tests.
+- [db.json](db.json): Local JSON Server data source.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Getting Started
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Prerequisites
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Node.js 20+
+- npm
 
+### Install
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Run the App Locally
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Start API server (port 3001):
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm run api
 ```
+
+In a second terminal, start the frontend dev server:
+
+```bash
+npm run dev
+```
+
+## Scripts
+
+- npm run dev: Start Vite dev server.
+- npm run api: Start local JSON Server API.
+- npm run build: Type-check and build production bundle.
+- npm run preview: Preview production build locally.
+- npm run test: Start Vitest in interactive mode.
+- npm run test:run: Run tests once.
+- npm run test:coverage: Run tests with coverage report.
+
+## Testing and Quality
+
+- Coverage thresholds are configured in [vite.config.ts](vite.config.ts) (minimum 70% for lines/functions/branches/statements).
+- Run full tests:
+
+```bash
+npm run test:run
+```
+
+- Run coverage:
+
+```bash
+npm run test:coverage
+```
+
+## Deployment Notes
+
+- The app is configured for GitHub Pages using the base path /customer-app/.
+- GitHub Actions workflow is located at [.github/workflows/ci-pages.yml](.github/workflows/ci-pages.yml).
+- In static hosting environments, API endpoints may be unavailable; the app can fall back to demo sample data.
+
+## Repository
+
+- Owner: iltStudent08
+- Repo: customer-app
