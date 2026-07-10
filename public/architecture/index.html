@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Architecture</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 2rem;
+        font-family: Georgia, 'Times New Roman', serif;
+        line-height: 1.6;
+      }
+      main {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      pre,
+      code {
+        font-family: Menlo, Consolas, Monaco, monospace;
+      }
+      pre {
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        overflow: auto;
+      }
+      table {
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 0.35rem 0.55rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="content">Loading ARCHITECTURE...</main>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+      fetch('./ARCHITECTURE.md')
+        .then((response) => {
+          if (!response.ok) throw new Error('Unable to load ARCHITECTURE.md')
+          return response.text()
+        })
+        .then((markdown) => {
+          document.getElementById('content').innerHTML = marked.parse(markdown)
+        })
+        .catch((error) => {
+          document.getElementById('content').textContent = error.message
+        })
+    </script>
+  </body>
+</html>

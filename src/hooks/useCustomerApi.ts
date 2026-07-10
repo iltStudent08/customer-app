@@ -220,7 +220,7 @@ export function useCustomerApi(): UseCustomerApiResult {
 
         await fetchCustomers(lastQuery, false)
         return true
-      } catch (err) {
+      } catch {
         const maxId = Math.max(0, ...demoCustomers.map((customer) => customer.id))
         const nextCustomers = [
           ...demoCustomers,
@@ -270,7 +270,7 @@ export function useCustomerApi(): UseCustomerApiResult {
 
         await fetchCustomers(lastQuery, false)
         return true
-      } catch (err) {
+      } catch {
         const nextCustomers = demoCustomers.map((currentCustomer) =>
           currentCustomer.id === customer.id ? customer : currentCustomer,
         )
@@ -310,7 +310,7 @@ export function useCustomerApi(): UseCustomerApiResult {
 
         await fetchCustomers(lastQuery, false)
         return true
-      } catch (err) {
+      } catch {
         const nextCustomers = demoCustomers.filter((customer) => customer.id !== id)
 
         setIsDemoMode(true)
