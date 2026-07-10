@@ -159,3 +159,27 @@ GitHub Pages specific details:
 - Vite base path is set to /customer-app/.
 - BrowserRouter uses basename from import.meta.env.BASE_URL.
 - Demo fallback mode allows UI demonstration even when API is not reachable from static hosting.
+
+## Branching Strategy
+
+- Keep `master` as the stable branch.
+- Create short-lived branches from `master` for each unit of work.
+- Use focused commits and open a PR back into `master`.
+- Prefer one concern per branch (feature, fix, docs, or test-focused changes).
+- Avoid mixing unrelated files in the same commit/PR.
+
+Branch naming conventions:
+
+- `feature/<scope>-<name>`
+- `fix/<scope>-<name>`
+- `docs/<scope>-<name>`
+- `test/<scope>-<name>`
+
+Typical workflow:
+
+1. Pull latest `master`.
+2. Create a branch from `master`.
+3. Implement and commit in small, meaningful increments.
+4. Push branch and open PR.
+5. Run/verify build and tests before merge.
+6. Merge to `master` and clean up branch.
